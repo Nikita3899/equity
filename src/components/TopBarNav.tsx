@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { UploadOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
 import { Button, Col, Dropdown, Layout, Menu, MenuProps, Row, Space, message, theme } from 'antd';
 import style from './layout.module.scss'
@@ -7,10 +7,12 @@ import LineChart from './LineChart';
 import BarChart from './BarChart';
 import StackedBarChart from './StackedBarChart';
 import Table from './Table';
+import FormComponent from './FormComponent';
 
 
 const TopBarNav = () => {
 
+  const [showModals, setShowModals] = useState(false)
   const { Header, Content, Footer, Sider } = Layout;
   const labels = ['Dashboards', 'Account', 'Payroll', 'Reports', 'Advisor', 'Contacts']
 
@@ -20,61 +22,33 @@ const TopBarNav = () => {
     message.info(`Click on item ${key}`);
   };
   
-  const items: MenuProps['items'] = [
-    {
-      label: 'January',
-      key: '1',
-    },
-    {
-      label: 'Feburary',
-      key: '2',
-    },
-    {
-      label: 'March',
-      key: '3',
-    },
-    {
-      label: 'April',
-      key: '4',
-    },
-    {
-      label: 'May',
-      key: '5',
-    },
-    {
-      label: 'June',
-      key: '6',
-    },
-    {
-      label: 'July',
-      key: '7',
-    },
-    {
-      label: 'August',
-      key: '8',
-    },
-    {
-      label: 'September',
-      key: '9',
-    },
-    {
-      label: 'October',
-      key: '10',
-    },
-    {
-      label: 'November',
-      key: '11',
-    },
-    {
-      label: 'December',
-      key: '12',
-    },
-  ];
+
+
+  const items = ['January', 'February', 'March','April','May','June','July','August','September',
+  'October','November','December'];
+
+
+  const menu = (
+    <div className={style['monthly-selection']}>
+       <Menu onClick={onClick}>
+      {items.map((item)=>(
+        <Menu.Item key={item}>{item}</Menu.Item>
+      )
+      )}
+    </Menu>
+    </div>
+   
+  )
 // https://calendar.app.google/pYb2YYmDVEvfoTxa6
 
-  return (
+const onCancel = () =>{
+  setShowModals(false);
+}
 
-     <Layout>
+  return (
+<>
+{showModals && (<FormComponent visible={showModals} onCancel={onCancel}/>)}
+<Layout>
       <div className={style['sider-container']}>
       <Sider
         breakpoint="lg"
@@ -106,23 +80,25 @@ const TopBarNav = () => {
         <Row gutter={16}>
           <Col span={12}>
           <Content style={{ margin: '24px 16px 0' }}>
-          <div style={{ padding:'8px 0px',minHeight: '40vh', background: '#fff', borderRadius:'12px' }}>
+          <div style={{minHeight: '40vh', background: '#fff', borderRadius:'12px' }}>
             <div className={style['wrap-header']}>
               <div className={style['heading-text']}>
               Checking Account
               </div>
-              <div className={style['wrap-selects']}>
-                  <Dropdown menu={{ items, onClick }}>
+              <div className={style['monthly-selection']}>
+                  <Dropdown overlay={menu}>
                     <div onClick={(e) => e.preventDefault()}>
                       <Space>
+                        <Button>
                         January
                         <DownOutlined />
+                        </Button>   
                       </Space>
                     </div>
                   </Dropdown>
               </div>
             </div>
-            <div className={style['charts-section']} style={{width: '80%', marginTop:'20px'}}>
+            <div className={style['charts-section']} style={{width: '90%'}}>
             <LineChart/> 
             </div>
           </div>
@@ -135,9 +111,12 @@ const TopBarNav = () => {
               <div className={style['heading-text']}>
               Checking Account
               </div>
-                 <Button>
+              <div className={style['button-invoice']}>
+                <Button onClick={()=>setShowModals(true)}>
                   New Sales Invoice
-                 </Button>  
+                </Button>
+              </div>
+                   
             </div>
             <div className={style['charts-section']} style={{width: '100%'}}>
               <BarChart/> 
@@ -155,7 +134,7 @@ const TopBarNav = () => {
               Checking Account
               </div>
             </div>
-            <div className={style['charts-section']} style={{width: '100%'}}>
+            <div className={style['charts-section']} style={{width: '90%'}}>
               <StackedBarChart/> 
             </div>
           </div>
@@ -167,10 +146,10 @@ const TopBarNav = () => {
           <div style={{ minHeight: '40vh', background: '#fff', borderRadius:'12px' }}>
           <div className={style['wrap-header']}>
               <div className={style['heading-text']}>
-              Checking Account
+              Account watchlist
               </div>
             </div>
-            <div className={style['charts-section']} >
+            <div className={style['table-section']}>
               <Table/> 
             </div>
           </div>
@@ -182,6 +161,8 @@ const TopBarNav = () => {
       </Layout>
     </Layout>
 
+</>
+     
   )
 }
 

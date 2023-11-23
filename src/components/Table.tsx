@@ -4,51 +4,54 @@ import { Table } from 'antd';
 const dataSource = [
   {
     key: '1',
-    name: 'John Doe',
-    age: 25,
-    address: '123 Main St',
+    account: 'John Doe',
+    this_month: 25,
+    ytd: '123 Main St',
   },
   {
     key: '2',
-    name: 'Jane Doe',
-    age: 30,
-    address: '456 Oak St',
+    account: 'Jane Doe',
+    this_month: 30,
+    ytd: '456 Oak St',
   },
   {
     key: '3',
-    name: 'Jane Doe',
-    age: 30,
-    address: '456 Oak St',
+    account: 'Jane Doe',
+    this_month: 30,
+    ytd: '456 Oak St',
   },
   {
     key: '4',
-    name: 'Jane Doe',
-    age: 30,
-    address: '456 Oak St',
+    account: 'Jane Doe',
+    this_month: 30,
+    ytd: '456 Oak St',
   },
   {
     key: '5',
-    name: 'Jane Doe',
-    age: 30,
-    address: '456 Oak St',
+    account: 'Jane Doe',
+    this_month: 30,
+    ytd: '456 Oak St',
   },
 ];
 
 const columns = [
   {
-    title: 'Name',
-    dataIndex: 'name',
-    key: 'name',
+    title: 'Account',
+    dataIndex: 'account',
+    key: 'account',
+    width : 200,
   },
   {
-    title: 'Age',
-    dataIndex: 'age',
-    key: 'age',
+    title: 'This Month',
+    dataIndex: 'this_month',
+    key: 'this_month',
+    width : 80,
   },
   {
-    title: 'Address',
-    dataIndex: 'address',
-    key: 'address',
+    title: 'YTD',
+    dataIndex: 'ytd',
+    key: 'ytd',
+    width:80,
   },
 
 ];

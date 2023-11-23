@@ -2,6 +2,7 @@
 .sider-container{
     background-color: #fff;
     height: 100vh;
+    font-weight: 500;
 
     :global(.ant-menu-title-content){
         text-align: left;
@@ -34,12 +35,13 @@
 }
 
 .wrap-header{
-    height: 5vh;
+    // height: 5vh;
     border-bottom: 1px solid #dedede;
     align-items: center;
     display: flex;
     justify-content: space-between;
     padding: 0px 12px;
+    margin-bottom: 12px;
 }
 
 .wrap-selects{
@@ -54,3 +56,46 @@
       }
     }
   }
+
+.charts-section{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.table-section{
+    :global(:where(.css-dev-only-do-not-override-nllxry).ant-table-wrapper .ant-table-thead >tr>th){
+        padding: 8px 8px 0px !important;
+        color: #CFD1D3;
+        font-weight: 500;
+        background-color: #fff;
+        border-bottom: none;
+    }
+
+    :global(:where(.css-dev-only-do-not-override-nllxry).ant-table-wrapper .ant-table-tbody>tr>td,){
+        padding: 12px 8px !important;
+        font-weight: 500;
+        border-bottom: none;
+    }
+    
+}
+
+.monthly-selection{
+
+        max-height: 200px !important;
+        overflow: auto !important;
+
+}
+
+.button-invoice{
+    :global(:where(.css-dev-only-do-not-override-nllxry).ant-btn-default){
+        background-color: #E8EEFD !important;
+        color:#1a53ee !important;
+        font-weight: 500;
+    }
+}
+
+.heading-text{
+    font-weight: 600;
+    padding: 12px 0px;
+}

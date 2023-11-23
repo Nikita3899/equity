@@ -27,11 +27,12 @@ const StackedBarChart = () => {
   useEffect(() => {
 
     const w = width || 600;
+
     d3.select(svgRef.current).selectAll('*').remove();
 
     const svg = d3.select(svgRef.current)
-                    .style('margin-top',20);
-
+                    .style('margin-top',20)
+                   
 
     const keys = ['value1', 'value2'];
 
@@ -40,7 +41,7 @@ const StackedBarChart = () => {
     const stackedData = stack(data);
 
     // Set up scales
-    const xScale = d3.scaleBand().domain(data.map(d => d.category)).range([0,w]).padding(0.8);
+    const xScale = d3.scaleBand().domain(data.map(d => d.category)).range([0,w + 5]).padding(0.8);
     const yScale = d3.scaleLinear().domain([0, d3.max(stackedData[stackedData.length - 1], d => d[1]) || 0]).range([200, 0]);
 
 
@@ -62,24 +63,23 @@ const StackedBarChart = () => {
       .attr('y', d => yScale(d[1]) || 0)
       .attr('height', d => yScale(d[0]) - yScale(d[1]) || 0)
       .attr('width', xScale.bandwidth() || 0)
-      .attr('rx', 8) // Set the horizontal border radius
-      .attr('ry', 8);
 
     // Draw the axes
     const xAxis = d3.axisBottom(xScale)
                     .tickSizeInner(0);;
     
 
-    svg.append('g').attr('transform', 'translate(0,200)').call(xAxis)  .selectAll('path')
+    svg.append('g').attr('transform', 'translate(0,200)').call(xAxis)
+            .selectAll('path')
             .style('display', 'none')
-            .selectAll('text')
+            .selectAll('.tick text')
             .style('fill', '#dedede');
    
   }, [data,width]);
 
   return (
-    <div ref={containerRef}style={{width:'100%', display:'flex', alignItems:'center', justifyContent:'center'}}>
-      <svg ref={svgRef} width={`${width}`} height={250}></svg>
+    <div ref={containerRef}style={{width:'100%'}}>
+      <svg ref={svgRef} width={`${width}`} height={250}/>
     </div>
   );
 };
