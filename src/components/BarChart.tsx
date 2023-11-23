@@ -1,9 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
-import { useDimensions } from './ResponsiveContainer'; // Replace with the correct path
+import { useDimensions } from './ResponsiveContainer'; 
 
-const BarChart = () => {
-  const [data] = useState([56, 88, 90, 67, 23]);
+interface BarChartProps {
+  data : number[]
+}
+
+const BarChart: React.FC<BarChartProps> = ({data}) => {
+  // const [data] = useState([56, 88, 90, 67, 23]);
   const svgRef = useRef<SVGSVGElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const { width } = useDimensions(containerRef);
@@ -35,14 +39,12 @@ const BarChart = () => {
       // setting the axes
       const xAxis = d3.axisBottom(xScale).ticks(data.length).tickSizeInner(0);
 
-      const xAxisGroup = svg
+       svg
         .append('g')
         .call(xAxis)
         .attr('transform', `translate(0,${h + 30})`)
         .selectAll('path')
         .style('display', 'none');
-
-      xAxisGroup.selectAll('.tick text').classed('axis-x', true);
 
       // setting data in svg
       const bars = svg.selectAll('.bar').data(data);
@@ -60,15 +62,8 @@ const BarChart = () => {
         .attr('fill', 'blue');
     };
 
-    drawChart(); // Initial draw
+    drawChart(); 
 
-    // Redraw on window resize
-    window.addEventListener('resize', drawChart);
-
-    // Cleanup event listener on component unmount
-    return () => {
-      window.removeEventListener('resize', drawChart);
-    };
   }, [data, width]);
 
   return (

@@ -3,6 +3,7 @@
     background-color: #fff;
     height: 100vh;
     font-weight: 500;
+    
 
     :global(.ant-menu-title-content){
         text-align: left;
@@ -57,6 +58,12 @@
     }
   }
 
+.wrap-dropDowns{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}  
+
 .charts-section{
     display: flex;
     align-items: center;
@@ -98,4 +105,27 @@
 .heading-text{
     font-weight: 600;
     padding: 12px 0px;
+}
+
+.wrap-legends{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+}
+
+.wrap-legends-one{
+    @extend .wrap-legends;
+}
+
+.sq{
+    height: 12px;
+    width: 12px;
+    background-color: #01BB7D;
+    border-radius: 2px;
+}
+
+.sq1{
+    @extend .sq;
+    background-color:#1A53EE
 }

@@ -21,7 +21,7 @@ const MyForm = ({ visible, onCancel }:{visible:boolean, onCancel:any}) => {
       onCancel={onCancel}
       footer={null}
     >
-       <Form form={form} onFinish={onFinish} layout="vertical">
+    <Form form={form} onFinish={onFinish} layout="vertical">
       <Row gutter={16}>
         <Col span={12}>
           <Form.Item label="Customer Name" name="customerName" rules={[{ required: true, message: 'Please enter customer name' }]}>

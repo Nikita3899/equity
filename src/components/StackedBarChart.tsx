@@ -2,6 +2,8 @@ import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 import { useDimensions } from './ResponsiveContainer';
 
+
+
 interface DataItem {
   category: string;
   value1: number;
@@ -9,16 +11,13 @@ interface DataItem {
   index: number;
 }
 
-const data: DataItem[] = [
-  { category: 'January', value1: 10, value2: 20, index:0 },
-  { category: 'Feburary', value1: 45, value2: 10, index: 1 },
-  { category: 'March', value1: 15, value2: 30, index: 2 },
-  { category: 'April', value1: 30, value2: 40, index: 3},
-  { category: 'May', value1: 45, value2: 10, index: 4 },
-  { category: 'June', value1: 15, value2: 30, index: 5 },
-];
+interface StackedBarChartProps{
+  data : DataItem[];
 
-const StackedBarChart = () => {
+}
+
+
+const StackedBarChart: React.FC<StackedBarChartProps> = ({data}) => {
   const svgRef = useRef(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const { width } = useDimensions(containerRef);

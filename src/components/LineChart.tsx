@@ -1,9 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import { useDimensions } from './ResponsiveContainer';
 
-const LineChart = () => {
-  const [data] = useState([1, 120, 63, 4, 5]);
+interface LineChartProps {
+  data: number[];
+}
+
+const LineChart: React.FC<LineChartProps> = ({ data }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const { width } = useDimensions(containerRef);
@@ -19,7 +22,7 @@ const LineChart = () => {
     const chartHeight = 180;
 
     // Set up the SVG
-    svg.attr('width', width+20).attr('height', chartHeight + 50);
+    svg.attr('width', width + 20).attr('height', chartHeight + 50);
 
     // Create a scale for the x-axis
     const xScale = d3.scaleLinear().domain([0, data.length - 1]).range([0, chartWidth]);
@@ -28,11 +31,7 @@ const LineChart = () => {
     const yScale = d3.scaleLinear().domain([0, d3.max(data) || 1]).range([chartHeight, 0]);
 
     // Define the line function
-    const line = d3
-      .line<number>()
-      .x((d, i) => xScale(i))
-      .y((d) => yScale(d))
-      .curve(d3.curveCardinal);
+    const line = d3.line<number>().x((_, i) => xScale(i)).y(d => yScale(d)).curve(d3.curveCardinal);
 
     // setting up the axes
     const xAxis = d3.axisBottom(xScale).ticks(data.length).tickSizeInner(0).tickFormat(((d, i) => (i + 1).toString()) as (d: d3.NumberValue, i: number) => string);
@@ -44,21 +43,21 @@ const LineChart = () => {
     svg
       .append('defs')
       .append('clipPath')
-      .attr('id', 'chart-clip-path')
+      .attr('id', 'line-chart-clip-path')
       .append('rect')
       .attr('width', chartWidth + 6)
-      .attr('height', chartHeight + 60); 
+      .attr('height', chartHeight + 60);
 
     // Apply clipping path to the chart
-    chart.attr('clip-path', 'url(#chart-clip-path)');
+    chart.attr('clip-path', 'url(#line-chart-clip-path)');
 
     // Draw the x-axis
     chart
       .append('g')
       .call(xAxis)
-      .attr('transform', `translate(0,${chartHeight + 15})`)
+      .attr('transform', `translate(0,${chartHeight + 25})`)
       .selectAll('path')
-      .style('display', 'none') 
+      .style('display', 'none');
 
     // Draw the line chart
     chart

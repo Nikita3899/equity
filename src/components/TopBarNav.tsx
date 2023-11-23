@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { UploadOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
-import { Button, Col, Dropdown, Layout, Menu, MenuProps, Row, Space, message, theme } from 'antd';
+import { Button, Col, Dropdown, Layout, Menu, Row, Space, message, theme } from 'antd';
 import style from './layout.module.scss'
 import { DownOutlined } from '@ant-design/icons';
 import LineChart from './LineChart';
@@ -8,36 +8,49 @@ import BarChart from './BarChart';
 import StackedBarChart from './StackedBarChart';
 import Table from './Table';
 import FormComponent from './FormComponent';
+import {labels, items, manageItems, stackData} from './consts'
+import Search from 'antd/es/input/Search';
+import Bell from '../assets/Bell.svg'
 
 
 const TopBarNav = () => {
 
   const [showModals, setShowModals] = useState(false)
   const { Header, Content, Footer, Sider } = Layout;
-  const labels = ['Dashboards', 'Account', 'Payroll', 'Reports', 'Advisor', 'Contacts']
+ 
+  const [data, setData] = useState([21, 72, 26, 64, 56]);
+  const [stackedData , setStackedData] = useState(stackData);
 
+  const generateRandomData = () => {
+    const newData = Array.from({ length:Math.floor(Math.random() * (9 - 5 + 1)) + 5 }, () => Math.floor(Math.random() * 100));
+    setData(newData);
 
-
-  const onClick: MenuProps['onClick'] = ({ key }) => {
-    message.info(`Click on item ${key}`);
+    const newDataStacked = stackedData.map((item) => ({
+      ...item,
+      value1: Math.floor(Math.random() * 100),
+      value2: Math.floor(Math.random() * 100),
+    }));
+  
+    setStackedData(newDataStacked);
   };
   
-
-
-  const items = ['January', 'February', 'March','April','May','June','July','August','September',
-  'October','November','December'];
-
-
   const menu = (
     <div className={style['monthly-selection']}>
-       <Menu onClick={onClick}>
+       <Menu onClick={generateRandomData}>
       {items.map((item)=>(
         <Menu.Item key={item}>{item}</Menu.Item>
       )
       )}
     </Menu>
     </div>
-   
+  )
+
+  const menuManage = (
+    <Menu onClick={generateRandomData}>
+      {manageItems.map((item)=>(
+        <Menu.Item key={item}>{item}</Menu.Item>
+      ))}
+    </Menu>
   )
 // https://calendar.app.google/pYb2YYmDVEvfoTxa6
 
@@ -45,7 +58,7 @@ const onCancel = () =>{
   setShowModals(false);
 }
 
-  return (
+return (
 <>
 {showModals && (<FormComponent visible={showModals} onCancel={onCancel}/>)}
 <Layout>
@@ -76,7 +89,12 @@ const onCancel = () =>{
       </Sider>
       </div>
       <Layout>
-        <Header style={{ padding: 0, backgroundColor: '#fff' }} />
+        <Header style={{ padding: 0, backgroundColor: '#fff',display:'flex',alignItems:'center',justifyContent:'flex-end'}}>
+          <div style={{paddingTop:'10px',display:'flex'}}>
+            <div style={{width:'300px',paddingRight:'20px'}}><Search/></div>
+            <div style={{marginTop:'-5px'}}><img src={Bell}/></div>
+          </div>
+          </Header>
         <Row gutter={16}>
           <Col span={12}>
           <Content style={{ margin: '24px 16px 0' }}>
@@ -84,6 +102,19 @@ const onCancel = () =>{
             <div className={style['wrap-header']}>
               <div className={style['heading-text']}>
               Checking Account
+              </div>
+              <div className={style['wrap-dropDowns']}>
+              <div className={style['monthly-selection']} style={{paddingRight:'12px'}}>
+                  <Dropdown overlay={menuManage}>
+                    <div onClick={(e) => e.preventDefault()}>
+                      <Space>
+                        <Button>
+                        Manage
+                        <DownOutlined />
+                        </Button>   
+                      </Space>
+                    </div>
+                  </Dropdown>
               </div>
               <div className={style['monthly-selection']}>
                   <Dropdown overlay={menu}>
@@ -97,9 +128,10 @@ const onCancel = () =>{
                     </div>
                   </Dropdown>
               </div>
+              </div>   
             </div>
             <div className={style['charts-section']} style={{width: '90%'}}>
-            <LineChart/> 
+            <LineChart data={data}/> 
             </div>
           </div>
         </Content>
@@ -109,7 +141,7 @@ const onCancel = () =>{
           <div style={{ minHeight: '40vh', background: '#fff', borderRadius:'12px' }}>
           <div className={style['wrap-header']}>
               <div className={style['heading-text']}>
-              Checking Account
+                Invoices owed to you
               </div>
               <div className={style['button-invoice']}>
                 <Button onClick={()=>setShowModals(true)}>
@@ -119,7 +151,7 @@ const onCancel = () =>{
                    
             </div>
             <div className={style['charts-section']} style={{width: '100%'}}>
-              <BarChart/> 
+              <BarChart data={data}/> 
             </div>
           </div>
         </Content></Col>
@@ -131,11 +163,21 @@ const onCancel = () =>{
           <div style={{ minHeight: '40vh', background: '#fff', borderRadius:'12px' }}>
           <div className={style['wrap-header']}>
               <div className={style['heading-text']}>
-              Checking Account
+              Total Cash Flow
+              </div>
+              <div className={style['wrap-legends']}>
+                <div className={style['wrap-legends']} style={{paddingRight:'10px'}}>
+                  <div className={style['sq']}/>
+                  <div style={{color:'#dadada'}}>In</div>
+                  </div>
+                  <div className={style['wrap-legends']}>
+                  <div className={style['sq1']}/>
+                  <div style={{color:'#dadada'}}>Out</div>
+                  </div>
               </div>
             </div>
             <div className={style['charts-section']} style={{width: '90%'}}>
-              <StackedBarChart/> 
+              <StackedBarChart data={stackedData}/> 
             </div>
           </div>
         </Content>
