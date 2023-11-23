@@ -47,3 +47,10 @@
     border-radius: 4px;
     padding: 2px 12px;
 }
+.axis-x {
+    .tick {
+      text {
+        fill: red !important; // Change color to your preference
+      }
+    }
+  }

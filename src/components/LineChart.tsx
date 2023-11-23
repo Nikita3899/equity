@@ -1,67 +1,89 @@
 import React, { useEffect, useRef, useState } from 'react'
 import * as d3 from 'd3';
+import { useDimensions } from './ResponsiveContainer'
+
+ // Assuming you have a useDimensions hook
 
 const LineChart = () => {
-    const [data] = useState([67,98,78,90,89,89,96]);
-    const svgRef = useRef<SVGSVGElement | null>(null);
+  const [data] = useState([67, 98, 78, 10, 89]);
+  const svgRef = useRef<SVGSVGElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const { width, height } = useDimensions(containerRef);
 
-    useEffect(()=>{
+  useEffect(() => {
+    const svg = d3.select(svgRef.current)
+                    .style('overflow', 'visible');
 
-        const w = 400;
-        const h = 80;
+    // Clear previous content
+    svg.selectAll('*').remove();
 
-        const svg = d3.select(svgRef.current)
-                        .attr('width', w)
-                        .attr('height', h)
-                        .style('margin-top', 50)
-                        .style('overflow', 'visible')
-                       
+    // Set up the chart dimensions
+    const margin = { top: 40, right: 10, bottom: 30, left: 40 };
+    const chartWidth = width - margin.left - margin.right;
+    const chartHeight = height - margin.top - margin.bottom;
 
-       // Create a scale for the x-axis
-        const xScale = d3.scaleLinear()
-                        .domain([0, data.length - 1])
-                        .range([0, w]);
+    console.log(width,'width');
 
+    // Set up the SVG
+    svg.attr('width', width).attr('height', height);
 
-      // Create a scale for the y-axis
-        const yScale = d3.scaleLinear()
-                        .domain([0, d3.max(data) || 0]) // Use a default value if d3.max(data) is undefined
-                        .range([h, 0])
-                  
-     // Define the line function
-     const line = d3.line<number>()
-                    .x((d, i) => xScale(i))
-                    .y((d) => yScale(d))
-                    .curve(d3.curveCardinal)
+    // Create a scale for the x-axis
+    const xScale = d3.scaleLinear().domain([0, data.length - 1]).range([0, chartWidth]);
+
+    // Create a scale for the y-axis
+    const yScale = d3.scaleLinear().domain([0, d3.max(data) || 0]).range([chartHeight, 0]);
+
+    // Define the line function
+    const line = d3
+      .line<number>()
+      .x((d, i) => xScale(i))
+      .y((d) => yScale(d))
+      .curve(d3.curveCardinal);
 
     // setting up the axes
-     const xAxis = d3.axisBottom(xScale)
-                    .ticks(data.length)
-                    .tickFormat(((d, i) => (i + 1).toString()) as (d: d3.NumberValue, i: number) => string); 
+    const xAxis = d3
+      .axisBottom(xScale)
+      .ticks(data.length)
+      .tickSizeInner(0)
+      .tickFormat(((d, i) => (i + 1).toString()) as (d: d3.NumberValue, i: number) => string);
 
-     svg.append('g')
-         .call(xAxis)
-         .attr('transform', `translate(0,${h+30})`)
+    // const yAxis = d3.axisLeft(yScale);
 
-     svg.selectAll('.line')
-         .data([data])
-         .join('path')
-         .attr('d', d => line(d))
-         .attr('fill', 'none')
-         .attr('stroke', 'blue')
-    
-    
-    
-    },[data])
+    // Create a container group for the chart
+    const chart = svg
+      .append('g')
+      .attr('transform', `translate(${margin.left},${margin.top})`);
 
-    
+    // Draw the x-axis
+    chart
+      .append('g')
+      .call(xAxis)
+      .attr('transform', `translate(0,${140})`)
+      .selectAll('path')
+      .style('display', 'none')
+      .selectAll('text')
+      .style('fill', '#dedede');
+
+    // Draw the y-axis
+    // chart.append('g').call(yAxis);
+
+    // Draw the line chart
+    chart
+      .append('path')
+      .datum(data)
+      .attr('class', 'line')
+      .attr('d', line)
+      .attr('fill', 'none')
+      .attr('stroke', 'blue')
+      .attr('stroke-width', 2);
+  }, [data, width, height]);
 
   return (
-    <div>
-        <svg ref={svgRef}></svg>
-      
+    <div ref={containerRef} style={{ width: '100%', height: '100%' }}>
+      <svg ref={svgRef} style={{ width: '100%', height: '100%' }}></svg>
     </div>
-  )
-}
+  );
+};
 
-export default LineChart
+export default LineChart;
+

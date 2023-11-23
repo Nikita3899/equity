@@ -5,6 +5,8 @@ import style from './layout.module.scss'
 import { DownOutlined } from '@ant-design/icons';
 import LineChart from './LineChart';
 import BarChart from './BarChart';
+import StackedBarChart from './StackedBarChart';
+import Table from './Table';
 
 
 const TopBarNav = () => {
@@ -120,7 +122,7 @@ const TopBarNav = () => {
                   </Dropdown>
               </div>
             </div>
-            <div className={style['charts-section']} >
+            <div className={style['charts-section']} style={{width: '80%', marginTop:'20px'}}>
             <LineChart/> 
             </div>
           </div>
@@ -137,57 +139,46 @@ const TopBarNav = () => {
                   New Sales Invoice
                  </Button>  
             </div>
-              <div className={style['charts-section']} >
+            <div className={style['charts-section']} style={{width: '100%'}}>
               <BarChart/> 
             </div>
           </div>
         </Content></Col>
         
         </Row>
-        <Row>
+        <Row  gutter={16}>
+        <Col span={12}>
         <Content style={{ margin: '24px 16px 0' }}>
           <div style={{ minHeight: '40vh', background: '#fff', borderRadius:'12px' }}>
           <div className={style['wrap-header']}>
               <div className={style['heading-text']}>
               Checking Account
               </div>
-              <div className={style['wrap-selects']}>
-                  <Dropdown menu={{ items, onClick }}>
-                    <a onClick={(e) => e.preventDefault()}>
-                      <Space>
-                        January
-                        <DownOutlined />
-                      </Space>
-                    </a>
-                  </Dropdown>
-              </div>
-
             </div>
-           
-          </div>
-        </Content>
-        <Content style={{ margin: '24px 16px 0' }}>
-          <div style={{ minHeight: '40vh', background: '#fff', borderRadius:'12px' }}>
-          <div className={style['wrap-header']}>
-              <div className={style['heading-text']}>
-              Checking Account
-              </div>
-              <div className={style['wrap-selects']}>
-                  <Dropdown menu={{ items, onClick }}>
-                    <a onClick={(e) => e.preventDefault()}>
-                      <Space>
-                        January
-                        <DownOutlined />
-                      </Space>
-                    </a>
-                  </Dropdown>
-              </div>
+            <div className={style['charts-section']} style={{width: '100%'}}>
+              <StackedBarChart/> 
             </div>
           </div>
         </Content>
-        </Row>
+        </Col>
+        <Col span={12}>
        
-        {/* <Footer style={{ textAlign: 'center' }}></Footer> */}
+        <Content style={{ margin: '24px 16px 0' }}>
+          <div style={{ minHeight: '40vh', background: '#fff', borderRadius:'12px' }}>
+          <div className={style['wrap-header']}>
+              <div className={style['heading-text']}>
+              Checking Account
+              </div>
+            </div>
+            <div className={style['charts-section']} >
+              <Table/> 
+            </div>
+          </div>
+        </Content>
+        </Col>
+
+        </Row>
+
       </Layout>
     </Layout>
 
