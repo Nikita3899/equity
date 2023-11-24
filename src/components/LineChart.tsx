@@ -17,29 +17,36 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
     // Clear previous content
     svg.selectAll('*').remove();
 
-    // Set up the chart dimensions
+    // Setting up the chart dimensions
     const chartWidth = width;
     const chartHeight = 180;
 
-    // Set up the SVG
+    // Setting up the SVG
     svg.attr('width', width + 20).attr('height', chartHeight + 50);
 
-    // Create a scale for the x-axis
+    // Creating scale for the x-axis
+    // scaleLinear creates straight line domain decides the range of input values and
+    //  range is the interval of output values
     const xScale = d3.scaleLinear().domain([0, data.length - 1]).range([0, chartWidth]);
 
-    // Create a scale for the y-axis
-    const yScale = d3.scaleLinear().domain([0, d3.max(data) || 1]).range([chartHeight, 0]);
+    // Creating scale for the y-axis
+    const yScale = d3.scaleLinear().domain([0, d3.max(data) || 0]).range([chartHeight+10, 0]);
 
-    // Define the line function
+    // Defining the line function
+    // cteates line by setting x and y coordinates 
     const line = d3.line<number>().x((_, i) => xScale(i)).y(d => yScale(d)).curve(d3.curveCardinal);
 
     // setting up the axes
+  // creates x-axis using xscale
     const xAxis = d3.axisBottom(xScale).ticks(data.length).tickSizeInner(0).tickFormat(((d, i) => (i + 1).toString()) as (d: d3.NumberValue, i: number) => string);
 
     // Create a container group for the chart
+    // <g> element is a container that is used to group other SVG elements
     const chart = svg.append('g');
 
     // Create clipping path
+    // <defs> define reusable elements in SVG graphics.
+    // <clipPath> mask the content within that region.
     svg
       .append('defs')
       .append('clipPath')
@@ -59,7 +66,38 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
       .selectAll('path')
       .style('display', 'none');
 
+      // let Tooltip = d3.select("#div_template")
+      // .append("div")
+      // .style("opacity", 0)
+      // .attr("class", "tooltip")
+      // .style("background-color", "white")
+      // .style("border", "solid")
+      // .style("border-width", "2px")
+      // .style("border-radius", "5px")
+      // .style("padding", "5px")  
+
+      // var mouseover = function(this: any, data: any) {
+      //   Tooltip
+      //     .style("opacity", 1)
+      //   d3.select(this)
+      //     .style("stroke", "black")
+      //     .style("opacity", 1)
+      // }
+      // var mousemove = function(this: any, data:any) {
+      //   Tooltip
+      //     .html("The exact value of<br>this cell is: " + data.map((i:number)=>(`${[data[i]] + i}`)))
+      //     .style("left", (d3.mouse(this)[0]+70) + "px")
+      //     .style("top", (d3.mouse(this)[1]) + "px")
+      // }
+      // var mouseleave = function(this: any, data:any) {
+      //   Tooltip
+      //     .style("opacity", 0)
+      //   d3.select(this)
+      //     .style("stroke", "none")
+      //     .style("opacity", 0.8)
+
     // Draw the line chart
+    // path defines shape and line
     chart
       .append('path')
       .datum(data)
@@ -71,7 +109,7 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
   }, [data, width]);
 
   return (
-    <div ref={containerRef} style={{ width: '90%' }}>
+    <div ref={containerRef} style={{ width: '90%' }} id='div-template'>
       <svg ref={svgRef} width={`${width}`} height="100%"></svg>
     </div>
   );

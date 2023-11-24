@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { UploadOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
-import { Button, Col, Dropdown, Layout, Menu, Row, Space, message, theme } from 'antd';
+import { Button, Col, Dropdown, Layout, Menu, Row, Space } from 'antd';
 import style from './layout.module.scss'
 import { DownOutlined } from '@ant-design/icons';
 import LineChart from './LineChart';
@@ -8,7 +8,7 @@ import BarChart from './BarChart';
 import StackedBarChart from './StackedBarChart';
 import Table from './Table';
 import FormComponent from './FormComponent';
-import {labels, items, manageItems, stackData} from './consts'
+import {labels, items, manageItems, stackData, tableDataSource} from './consts'
 import Search from 'antd/es/input/Search';
 import Bell from '../assets/Bell.svg'
 
@@ -16,11 +16,11 @@ import Bell from '../assets/Bell.svg'
 const TopBarNav = () => {
 
   const [showModals, setShowModals] = useState(false)
-  const { Header, Content, Footer, Sider } = Layout;
- 
-  const [data, setData] = useState([21, 72, 26, 64, 56]);
+  const { Header, Content, Sider } = Layout;
+  const [data, setData] = useState([21, 62, 26, 64, 56]);
   const [stackedData , setStackedData] = useState(stackData);
-
+  const [dataSource, setDataSource] = useState(tableDataSource);
+  
   const generateRandomData = () => {
     const newData = Array.from({ length:Math.floor(Math.random() * (9 - 5 + 1)) + 5 }, () => Math.floor(Math.random() * 100));
     setData(newData);
@@ -32,6 +32,14 @@ const TopBarNav = () => {
     }));
   
     setStackedData(newDataStacked);
+
+    const newDataSource = dataSource.map((item)=>({
+      ...item,
+      this_month: Math.floor(Math.random() * 20000),
+      ytd: Math.floor(Math.random() * 20000)
+    }))
+
+    setDataSource(newDataSource);
   };
   
   const menu = (
@@ -92,7 +100,7 @@ return (
         <Header style={{ padding: 0, backgroundColor: '#fff',display:'flex',alignItems:'center',justifyContent:'flex-end'}}>
           <div style={{paddingTop:'10px',display:'flex'}}>
             <div style={{width:'300px',paddingRight:'20px'}}><Search/></div>
-            <div style={{marginTop:'-5px'}}><img src={Bell}/></div>
+            {/* <div style={{marginTop:'-5px'}}><img src={Bell}/></div> */}
           </div>
           </Header>
         <Row gutter={16}>
@@ -192,7 +200,7 @@ return (
               </div>
             </div>
             <div className={style['table-section']}>
-              <Table/> 
+              <Table data={dataSource}/> 
             </div>
           </div>
         </Content>

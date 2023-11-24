@@ -40,7 +40,8 @@ const StackedBarChart: React.FC<StackedBarChartProps> = ({data}) => {
     const stackedData = stack(data);
 
     // Set up scales
-    const xScale = d3.scaleBand().domain(data.map(d => d.category)).range([0,w + 5]).padding(0.8);
+    const xScale = d3.scaleBand().domain(data.map(d => d.category)).range([0,w + 8]).padding(0.8);
+    // range is top to bottom
     const yScale = d3.scaleLinear().domain([0, d3.max(stackedData[stackedData.length - 1], d => d[1]) || 0]).range([200, 0]);
 
 
@@ -49,6 +50,7 @@ const StackedBarChart: React.FC<StackedBarChartProps> = ({data}) => {
 
 
     // Draw the bars
+    // d defines shape of the path
     svg
       .selectAll('.stacked-bar')
       .data(stackedData)
@@ -62,8 +64,8 @@ const StackedBarChart: React.FC<StackedBarChartProps> = ({data}) => {
       .attr('y', d => yScale(d[1]) || 0)
       .attr('height', d => yScale(d[0]) - yScale(d[1]) || 0)
       .attr('width', xScale.bandwidth() || 0)
-
-    // Draw the axes
+  
+       // Draw the axes
     const xAxis = d3.axisBottom(xScale)
                     .tickSizeInner(0);;
     
