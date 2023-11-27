@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { useDimensions } from './ResponsiveContainer';
 
@@ -9,6 +9,9 @@ interface LineChartProps {
 const LineChart: React.FC<LineChartProps> = ({ data }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const tooltipRef = useRef<HTMLDivElement | null>(null);
+  const [tooltipVisible, setTooltipVisible] = useState(false);
+  const [tooltipData, setTooltipData] = useState<number | null>(null);
   const { width } = useDimensions(containerRef);
 
   useEffect(() => {
@@ -66,38 +69,17 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
       .selectAll('path')
       .style('display', 'none');
 
-      // let Tooltip = d3.select("#div_template")
-      // .append("div")
-      // .style("opacity", 0)
-      // .attr("class", "tooltip")
-      // .style("background-color", "white")
-      // .style("border", "solid")
-      // .style("border-width", "2px")
-      // .style("border-radius", "5px")
-      // .style("padding", "5px")  
+      const Tooltip = d3
+      .select('body')
+      .append('div')
+      .style('opacity', 0)
+      .attr('class', 'tooltip')
+      .style('background-color', 'white')
+      .style('border', 'solid')
+      .style('border-width', '2px')
+      .style('border-radius', '5px')
+      .style('padding', '5px');
 
-      // var mouseover = function(this: any, data: any) {
-      //   Tooltip
-      //     .style("opacity", 1)
-      //   d3.select(this)
-      //     .style("stroke", "black")
-      //     .style("opacity", 1)
-      // }
-      // var mousemove = function(this: any, data:any) {
-      //   Tooltip
-      //     .html("The exact value of<br>this cell is: " + data.map((i:number)=>(`${[data[i]] + i}`)))
-      //     .style("left", (d3.mouse(this)[0]+70) + "px")
-      //     .style("top", (d3.mouse(this)[1]) + "px")
-      // }
-      // var mouseleave = function(this: any, data:any) {
-      //   Tooltip
-      //     .style("opacity", 0)
-      //   d3.select(this)
-      //     .style("stroke", "none")
-      //     .style("opacity", 0.8)
-
-    // Draw the line chart
-    // path defines shape and line
     chart
       .append('path')
       .datum(data)
@@ -105,12 +87,41 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
       .attr('d', line)
       .attr('fill', 'none')
       .attr('stroke', 'blue')
-      .attr('stroke-width', 3);
+      .attr('stroke-width', 3)
+      .on('mouseover', (event, d) => {
+        const bisect = d3.bisector((datum: number) => datum).left;
+        const xMouse = xScale.invert(d3.pointer(event)[0]);
+      
+        const index = bisect(data, xMouse, 1);
+        const closestDataPoint = data[index - 1];
+      
+        setTooltipVisible(true);
+        setTooltipData(closestDataPoint);
+      })
+      // @ts-ignore
+      .on('mousemove', (event: MouseEvent, d: number) => {
+        if (tooltipRef.current && containerRef.current) {
+          const [x, y] = d3.pointer(event);
+          console.log(d,'kjghfhjoiuy')
+          const yValue = yScale.invert(y);
+          console.log('Y-Axis Value:', yValue);
+      
+          tooltipRef.current.style.transform = `translate(${x+10}px, ${y-150}px)`;
+        }
+      })
+      .on('mouseout', () => {
+        setTooltipVisible(false);
+      });
   }, [data, width]);
 
   return (
-    <div ref={containerRef} style={{ width: '90%' }} id='div-template'>
-      <svg ref={svgRef} width={`${width}`} height="100%"></svg>
+    <div ref={containerRef} style={{ width: '90%' }}>
+      <svg ref={svgRef} width={`${width}`} height="100%"/>
+      {/* {tooltipVisible && (
+        <div ref={tooltipRef} style={{ position: 'absolute', padding: '8px', background: 'rgba(255, 255, 255, 0.9)', borderRadius: '4px', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' }}>
+          {tooltipData !== null && <span>Value: {tooltipData}</span>}
+        </div>
+      )} */}
     </div>
   );
 };

@@ -7,9 +7,11 @@ interface BarChartProps {
 }
 
 const BarChart: React.FC<BarChartProps> = ({data}) => {
-  // const [data] = useState([56, 88, 90, 67, 23]);
   const svgRef = useRef<SVGSVGElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const tooltipRef = useRef<HTMLDivElement | null>(null);
+  const [tooltipVisible, setTooltipVisible] = useState(false);
+  const [tooltipData, setTooltipData] = useState<number | null>(null);
   const { width } = useDimensions(containerRef);
 
   useEffect(() => {
@@ -59,7 +61,22 @@ const BarChart: React.FC<BarChartProps> = ({data}) => {
         .attr('height', (val) => h - yScale(val))
         .attr('rx', 8)
         .attr('ry', 8)
-        .attr('fill', 'blue');
+        .attr('fill', 'blue')
+        .on('mouseover', (event, d) => {
+          setTooltipVisible(true);
+          setTooltipData(d);
+        })
+        .on('mousemove', (event: MouseEvent, d: number) => {
+          if (tooltipRef.current && containerRef.current) {
+            const [x, y] = d3.pointer(event);
+            console.log(d,'kjghfhjoiuy')
+        
+            tooltipRef.current.style.transform = `translate(${x-350}px, ${y+10}px)`;
+          }
+        })
+        .on('mouseout', () => {
+          setTooltipVisible(false);
+        });
     };
 
     drawChart(); 
@@ -69,6 +86,11 @@ const BarChart: React.FC<BarChartProps> = ({data}) => {
   return (
     <div ref={containerRef} style={{ width: '100%', height: '100%', display:'flex', alignItems:'center',justifyContent:'center' }}>
       <svg ref={svgRef}></svg>
+      {tooltipVisible && (
+        <div ref={tooltipRef} style={{ position: 'absolute', padding: '8px', background: 'rgba(255, 255, 255, 0.9)', borderRadius: '4px', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' }}>
+          {tooltipData !== null && <span>Value: {tooltipData}</span>}
+        </div>
+      )}
     </div>
   );
 };
